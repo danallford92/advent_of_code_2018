@@ -9,7 +9,7 @@
     (client/get "https://adventofcode.com/2018/day/1/input"
                 {:headers {:Cookie (format "session=%s" (first args))}})
     :body
-    problem1/run
+    problem1/run2
     println
     )
   )
