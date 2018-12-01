@@ -6,12 +6,19 @@
 
 
 (defn get-problem-input [[problem-number session-id]]
-  (def cache-file (format "problem-input/%s.txt" problem-number))
+
+  (def problem-input-dir "problem-input")
+
+  (if (not (.exists (io/file problem-input-dir)))
+    (.mkdir (io/file problem-input-dir))
+    )
+
+  (def cache-file (format "%s/%s.txt" problem-input-dir problem-number))
 
   (if (not (.exists (io/file cache-file)))
     (spit cache-file
           (:body (client/get (format "https://adventofcode.com/2018/day/%s/input" problem-number)
-                       {:headers {:Cookie (format "session=%s" session-id)}})))
+                             {:headers {:Cookie (format "session=%s" session-id)}})))
     )
 
   (slurp cache-file)
