@@ -4,10 +4,10 @@
 
 
 (deftest letter-count-frequencies-test
-  (is (= {1 6} (problem2/letter-count-frequencies "abcdef")))
-  (is (= {1 1} (problem2/letter-count-frequencies "a")))
-  (is (= {1 1 2 2} (problem2/letter-count-frequencies "12233")))
-  (is (= {1 1 2 1 3 1} (problem2/letter-count-frequencies "122333")))
+  (is (= #{1} (problem2/letter-counts "abcdef")))
+  (is (= #{1} (problem2/letter-counts "a")))
+  (is (= #{1 2} (problem2/letter-counts "12233")))
+  (is (= #{1 2 3} (problem2/letter-counts "122333")))
   )
 
 (deftest run1

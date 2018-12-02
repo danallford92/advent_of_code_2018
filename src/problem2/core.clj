@@ -2,19 +2,18 @@
   (:require
     [problem1.core :as problem1]))
 
-(defn letter-count-frequencies [s]
+(defn letter-counts [s]
   (->>
     s
-    seq
     frequencies
     vals
-    frequencies
+    (into #{})
     )
   )
 
 (defn run1 [in]
   (def freqs
-    (map letter-count-frequencies in))
+    (map letter-counts in))
   (def count2 (count (filter #(contains? % 2) freqs)))
   (def count3 (count (filter #(contains? % 3) freqs)))
   (* count2 count3)
