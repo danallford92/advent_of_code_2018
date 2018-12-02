@@ -1,10 +1,7 @@
-(ns problem1.core
-  (:require [clojure.string :as str]
-            ))
+(ns problem1.core)
 
 (defn parse-input [in]
   (->> in
-       str/split-lines
        (map (fn [x] (Integer/parseInt x)))))
 
 
@@ -14,14 +11,15 @@
              (reduce +)))
   )
 
+(defn find-first-repeat [xs]
+  (->> xs
+       (#(map (fn [a b] [a b]) (reductions conj #{} %) %))
+       (filter #(contains? (first %) (second %)))
+       (first)
+       (second)))
+
 (defn run2 [in]
   (def cum-sum #(reductions + %))
-  (defn find-first-repeat [xs]
-    (->> xs
-         (#(map (fn [a b] [a b]) (reductions conj #{} %) %))
-         (filter #(contains? (first %) (second %)))
-         (first)
-         (second)))
 
   (time (->> in
              parse-input
