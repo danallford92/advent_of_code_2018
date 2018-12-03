@@ -25,9 +25,9 @@
 (defn stubs [s]
   (->>
     s
-    count
-    range
-    (map #(remove-nth s %))
+    count 
+    range 
+    (map #(remove-nth s %)) 
     set
     )
   )
@@ -37,6 +37,6 @@
     in
     (map stubs)
     (mapcat seq)
-    problem1/find-first-repeat
+    problem1/find-duplicates
     )
   )

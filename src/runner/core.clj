@@ -1,7 +1,7 @@
 (ns runner.core
   (
     :require [clj-http.client :as client]
-             [problem2.core :as problem2]
+             [problem3.core :as problem3]
              [clojure.java.io :as io]
              [clojure.string :as str]
              ))
@@ -40,7 +40,7 @@
   (->>
     (get-problem-input args)
     str/split-lines
-    problem2/run2
+    problem3/run2
     println
     )
   )

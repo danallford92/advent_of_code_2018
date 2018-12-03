@@ -1,8 +1,8 @@
 (ns problem1.core)
 
 (defn parse-input [in]
-  (->> in
-       (map (fn [x] (Integer/parseInt x)))))
+  (map #(Integer/parseInt %) in)
+  )
 
 
 (defn run1 [in]
@@ -11,12 +11,13 @@
              (reduce +)))
   )
 
-(defn find-first-repeat [xs]
+(defn find-duplicates [xs]
   (->> xs
        (#(map (fn [a b] [a b]) (reductions conj #{} %) %))
        (filter #(contains? (first %) (second %)))
-       (first)
-       (second)))
+       (map second)
+       (into #{})
+       ))
 
 (defn run2 [in]
   (def cum-sum #(reductions + %))
@@ -25,7 +26,7 @@
              parse-input
              cycle
              cum-sum
-             find-first-repeat
+             find-duplicates
              )))
 
 
