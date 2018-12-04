@@ -63,10 +63,11 @@
   )
 
 (defn find-most-sleepy-minute [sleep-mins-for-guard]
-  (->>
-    sleep-mins-for-guard
-    frequencies
-    find-index-for-max)
+  (let [
+        freqs (frequencies sleep-mins-for-guard)
+        most-sleepy-minute (find-index-for-max freqs)]
+    [most-sleepy-minute (get freqs most-sleepy-minute)]
+    )
   )
 
 
@@ -74,19 +75,22 @@
   (let [events (ordered-events in)
         sleep-mins-by-guard (find-sleep-mins-by-guard events)
         [most-sleepy-guard-id most-sleepy-guard-sleep] (find-most-sleepy-guard sleep-mins-by-guard)
-        most-sleepy-guard-most-sleepy-minute (find-most-sleepy-minute most-sleepy-guard-sleep)]
+        [most-sleepy-guard-most-sleepy-minute _] (find-most-sleepy-minute most-sleepy-guard-sleep)]
     (* most-sleepy-guard-most-sleepy-minute (Integer/parseInt most-sleepy-guard-id))
     )
   )
 
-;(defn run1 [in]
-;  (let [events (ordered-events in)
-;        sleep-mins-by-guard (find-sleep-mins-by-guard events)
-;        ()
-;        ]
-;    (* most-sleepy-guard-most-sleepy-minute (Integer/parseInt most-sleepy-guard))
-;    )
-;  )
+(defn run2 [in]
+  (let [events (ordered-events in)
+        sleep-mins-by-guard (find-sleep-mins-by-guard events)
+        most-sleepy-minutes-by-guard (map (fn [[id sleep]] [id (find-most-sleepy-minute sleep)]) sleep-mins-by-guard)
+        most-sleep-in-a-minute (apply max (map second (map second most-sleepy-minutes-by-guard)))
+        [guard-id [minute sleep-in-most-sleepy-minute]] (first (filter #(= most-sleep-in-a-minute (second (second %))) most-sleepy-minutes-by-guard))
+        ]
 
+
+    (* minute (Integer/parseInt guard-id))
+    )
+  )
 
 
