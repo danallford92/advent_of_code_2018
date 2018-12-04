@@ -41,6 +41,10 @@
 
 (defn to-sleep [[_ curr prev]] (range (Integer/parseInt (:minute prev)) (Integer/parseInt (:minute curr))))
 
+(defn find-index-for-max [m]
+  (first (filter #(= (apply max (vals m)) (get m %)) (keys m)))
+  )
+
 (defn run1 [in]
   (let [events (ordered-events in)
         with-guard-and-previous (map vector (guard-on-duty events) (rest events) events)
@@ -51,12 +55,29 @@
         most-sleep (apply max (map second total-sleep-by-guard))
         [most-sleepy-guard _] (first (filter #(= most-sleep (second %)) total-sleep-by-guard))
         most-sleepy-guard-sleep (frequencies (second (first (filter #(= most-sleepy-guard (first %)) sleep-mins-by-guard))))
-        most-sleepy-guard-most-sleepy-minute
-        (first (filter #(= (apply max (vals most-sleepy-guard-sleep)) (get most-sleepy-guard-sleep %)) (keys most-sleepy-guard-sleep)))
+        most-sleepy-guard-most-sleepy-minute (find-index-for-max most-sleepy-guard-sleep)
+
         ]
     (* most-sleepy-guard-most-sleepy-minute (Integer/parseInt most-sleepy-guard))
     )
   )
+;
+;(defn run1 [in]
+;  (let [events (ordered-events in)
+;        with-guard-and-previous (map vector (guard-on-duty events) (rest events) events)
+;        guards-sleeping (filter (fn [[_ _ prev]] (= (:action prev) :sleep)) with-guard-and-previous)
+;        sleep-events (map vector (map first guards-sleeping) (map to-sleep guards-sleeping))
+;        sleep-mins-by-guard (map (fn [[id es]] [id (mapcat second es)]) (group-by first sleep-events))
+;        total-sleep-by-guard (map (fn [[id mins]] [id (count mins)]) sleep-mins-by-guard)
+;        most-sleep (apply max (map second total-sleep-by-guard))
+;        [most-sleepy-guard _] (first (filter #(= most-sleep (second %)) total-sleep-by-guard))
+;        most-sleepy-guard-sleep (frequencies (second (first (filter #(= most-sleepy-guard (first %)) sleep-mins-by-guard))))
+;        most-sleepy-guard-most-sleepy-minute
+;        (first (filter #(= (apply max (vals most-sleepy-guard-sleep)) (get most-sleepy-guard-sleep %)) (keys most-sleepy-guard-sleep)))
+;        ]
+;    (* most-sleepy-guard-most-sleepy-minute (Integer/parseInt most-sleepy-guard))
+;    )
+;  )
 
 
 
