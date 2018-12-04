@@ -35,12 +35,12 @@
   )
 
 (deftest run2-at
-  (is (= "fgij"
-        (problem2/run2 `("abcde" "fghij" "klmno" "pqrst" "fguij" "axcye" "wvxyz"))
+  (is (= #{"fgij"}
+         (problem2/run2 `("abcde" "fghij" "klmno" "pqrst" "fguij" "axcye" "wvxyz"))
         )))
 
 
 (deftest run2-at2
-  (is (= "fgij"
-         (problem2/run2 `("aaaaa" "fghij" "klmno" "pqrst" "fguij" "axcye" "wvxyz"))
-         )))
+  (is (= #{"fgij"}
+         (problem2/run2 `("aaaaa" "fghij" "klmno" "pqrst" "fguij" "axcye" "wvxyz")))
+      ))

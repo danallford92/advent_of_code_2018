@@ -9,7 +9,8 @@
         rest
         (map #(Integer/parseInt %))
         (into [])
-        ))
+        )
+  )
 
 (defn to-squares [[id x y width height]]
   (for [x-coord (set (range x (+ x width))), y-coord (set (range y (+ y height)))] (list x-coord y-coord))
