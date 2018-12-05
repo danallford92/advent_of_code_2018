@@ -19,3 +19,8 @@
   (is (= "b" (problem5/anhilate "aAb")))
   (is (= "dabCBAcaDA" (problem5/anhilate "dabAcCaCBAcCcaDA")))
   )
+
+
+(deftest run2
+  (is (= 4 (problem5/run2 ["dabAcCaCBAcCcaDA"])))
+  )
