@@ -5,7 +5,8 @@
   )
 
 (defn anhilate [s]
-  (apply str (rest (reduce (fn [acc c] (if (are-opposite (str (last acc)) (str c)) (subs acc 0 (- (count acc) 1)) (str acc c))) "~" s))))
+  (rest (reduce (fn [acc c] (if (are-opposite (str (first acc)) (str c)) (subs acc 1) (str c acc))) "~" s))
+  )
 
 (defn run1 [[s]]
   (time (->>
