@@ -1,11 +1,11 @@
 (ns problem5.core)
 
 (defn are-opposite [c1 c2]
-  (and (not (= c1 c2)) (= (. c1 String/toLowerCase) (. c2 String/toLowerCase)))
+  (= 32 (Math/abs (- (int c1) (int c2))))
   )
 
 (defn anhilate [s]
-  (rest (reduce (fn [acc c] (if (are-opposite (str (first acc)) (str c)) (subs acc 1) (str c acc))) "~" s))
+  (rest (reduce (fn [acc c] (if (are-opposite (first acc) c) (subs acc 1) (str c acc))) "Ā" s))
   )
 
 (defn run1 [[s]]
