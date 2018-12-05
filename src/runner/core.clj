@@ -1,14 +1,13 @@
 (ns runner.core
   (
     :require [clj-http.client :as client]
-             [problem4.core :as problem4]
+             [problem5.core :as problem5]
              [clojure.java.io :as io]
              [clojure.string :as str]
              ))
 
 
 (defn get-problem-input [[problem-number session-id]]
-
   (defn ensure-problem-input-cached [cache-file]
     (if (not (.exists (io/file cache-file)))
       (spit cache-file
@@ -40,7 +39,7 @@
   (->>
     (get-problem-input args)
     str/split-lines
-    problem4/run2
+    problem5/run1
     println
     )
   )

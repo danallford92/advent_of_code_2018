@@ -39,7 +39,7 @@
 
 (defn with-guard-and-previous [events] (map vector (guard-on-duty events) (rest events) events))
 
-(defn to-sleep [[_ curr prev]] (range (Integer/parseInt (:minute prev)) (Integer/parseInt (:minute curr))))
+(defn find-sleep-mins [[_ curr prev]] (range (Integer/parseInt (:minute prev)) (Integer/parseInt (:minute curr))))
 
 (defn find-index-for-max [m]
   (first (filter #(= (apply max (vals m)) (get m %)) (keys m)))
@@ -48,7 +48,7 @@
 (defn find-sleep-mins-by-guard [events]
   (let [with-guard-and-previous (map vector (guard-on-duty events) (rest events) events)
         guards-sleeping (filter (fn [[_ _ prev]] (= (:action prev) :sleep)) with-guard-and-previous)
-        sleep-events (map vector (map first guards-sleeping) (map to-sleep guards-sleeping))
+        sleep-events (map vector (map first guards-sleeping) (map find-sleep-mins guards-sleeping))
         sleep-mins-by-guard (map (fn [[id es]] [id (mapcat second es)]) (group-by first sleep-events))]
     sleep-mins-by-guard)
   )
@@ -72,22 +72,24 @@
 
 
 (defn run1 [in]
-  (let [events (ordered-events in)
-        sleep-mins-by-guard (find-sleep-mins-by-guard events)
-        [most-sleepy-guard-id most-sleepy-guard-sleep] (find-most-sleepy-guard sleep-mins-by-guard)
-        [most-sleepy-guard-most-sleepy-minute _] (find-most-sleepy-minute most-sleepy-guard-sleep)]
-    (* most-sleepy-guard-most-sleepy-minute (Integer/parseInt most-sleepy-guard-id))
+  (time
+    (let [events (ordered-events in)
+          mins-by-guard (find-sleep-mins-by-guard events)
+          [guard-id sleep] (find-most-sleepy-guard mins-by-guard)
+          [minute _] (find-most-sleepy-minute sleep)]
+
+      (* minute (Integer/parseInt guard-id))
+      )
     )
   )
 
 (defn run2 [in]
   (let [events (ordered-events in)
-        sleep-mins-by-guard (find-sleep-mins-by-guard events)
-        most-sleepy-minutes-by-guard (map (fn [[id sleep]] [id (find-most-sleepy-minute sleep)]) sleep-mins-by-guard)
-        most-sleep-in-a-minute (apply max (map second (map second most-sleepy-minutes-by-guard)))
-        [guard-id [minute sleep-in-most-sleepy-minute]] (first (filter #(= most-sleep-in-a-minute (second (second %))) most-sleepy-minutes-by-guard))
+        mins-by-guard (find-sleep-mins-by-guard events)
+        most-frequent-minute-by-guard (map (fn [[id sleep]] [id (find-most-sleepy-minute sleep)]) mins-by-guard)
+        most-sleep-in-a-minute (apply max (map second (map second most-frequent-minute-by-guard)))
+        [guard-id [minute _]] (first (filter (fn [[_ [_ x]]] (= most-sleep-in-a-minute  x)) most-frequent-minute-by-guard))
         ]
-
 
     (* minute (Integer/parseInt guard-id))
     )
