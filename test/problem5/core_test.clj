@@ -4,10 +4,10 @@
 
 
 (deftest are-opposite
-  (is (problem5/are-opposite "a" "A"))
-  (is (problem5/are-opposite "A" "a"))
-  (is (not (problem5/are-opposite "A" "b")))
-  (is (not (problem5/are-opposite "a" "b")))
+  (is (problem5/are-opposite \a \A))
+  (is (problem5/are-opposite \A \a))
+  (is (not (problem5/are-opposite \A \b)))
+  (is (not (problem5/are-opposite \a \b)))
   )
 
 (deftest anhilate

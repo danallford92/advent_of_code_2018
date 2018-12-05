@@ -4,13 +4,14 @@
   (= 32 (Math/abs (- (int c1) (int c2))))
   )
 
-(defn anhilate [s]
-  (rest (reduce (fn [acc c] (if (are-opposite (first acc) c) (subs acc 1) (str c acc))) "Ā" s))
+(defn anhilate [chars]
+  (apply str (rest (reverse (reduce (fn [acc c] (if (are-opposite (first acc) c) (rest acc) (cons c acc))) '(\Ā) chars))))
   )
 
 (defn run1 [[s]]
   (time (->>
           s
+          seq
           anhilate
           count))
   )
