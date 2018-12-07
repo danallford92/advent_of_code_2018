@@ -30,26 +30,28 @@
     )
   )
 
-(defn round-n [[done to-do a]]
+(defn round-n [[done to-do n in-progress _]]
   (let [
-        done-this-round (first
-                          (sort
-                            (map first
-                                 (filter
-                                   (fn [[_ constraints]]
-                                     (s/subset? constraints done))
-                                   to-do)))
-                          )
+        started-this-round (take n
+              (sort
+                (map first
+                     (filter
+                       (fn [[_ constraints]]
+                         (s/subset? constraints done))
+                       to-do)))
+              )
+        time (apply min (keys in-progress))
+        new-in-progress {(+ 1 time) started-this-round}
 
-        still-to-do (filter (fn [[step _]] (not (= step done-this-round))) to-do)
+        still-to-do (filter (fn [[step _]] (not (contains? (set started-this-round) step))) to-do)
         ]
-    [(set (cons done-this-round done)) still-to-do done-this-round]
+    [(set (concat started-this-round done)) still-to-do n new-in-progress started-this-round]
     )
   )
 
 (defn solve [deps]
-  (take-while #(not (nil? (nth % 2)))
-              (iterate round-n [#{} deps ""]))
+  (take-while #(not (empty? (mapcat second (nth % 3))))
+              (rest (iterate round-n [#{} deps 1 {0 []} []])))
   )
 
 
@@ -59,7 +61,7 @@
           in
           to-deps
           solve
-          (map #(nth % 2))
+          (mapcat #(nth % 4))
           (apply str)
           )
         )
