@@ -48,13 +48,8 @@
   )
 
 (defn solve [deps]
-  (let [
-        [f _] (first (sort (filter (fn [[_ constraints]] (empty? constraints)) deps)))
-        todo (filter #(not (= (first %) f)) deps)
-        ]
-    (take-while #(not (nil? (nth % 2)))
-                (iterate round-n [#{f} todo f]))
-    )
+  (take-while #(not (nil? (nth % 2)))
+              (iterate round-n [#{} deps ""]))
   )
 
 
@@ -68,7 +63,17 @@
           (apply str)
           )
         )
+  )
 
+(defn run2 [in]
+  (time (->>
+          in
+          to-deps
+          solve
+          (map #(nth % 2))
+          (apply str)
+          )
+        )
   )
 
 (def deps

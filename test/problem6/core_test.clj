@@ -1,6 +1,7 @@
 (ns problem6.core-test
   (:require [clojure.test :refer :all]
-            [problem6.core :as problem6]))
+            [problem6.core :as problem6]
+            ))
 
 
 (deftest equidistant-intersections
