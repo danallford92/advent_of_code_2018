@@ -4,15 +4,15 @@
 
 
 (deftest equidistant-intersections
-  (is (= #{[-5 0] [0 -5]} (problem6/equidistant-intersections [0 0] [-5 -5])))
-  (is (= #{[5 0] [0 5]} (problem6/equidistant-intersections [0 0] [5 5])))
-  (is (= #{[3 0] [1 2]} (problem6/equidistant-intersections [3 2] [1 0])))
-  (is (= #{[3/2 1] [5/2 0]} (problem6/equidistant-intersections [3 1] [1 0])))
-  (is (= #{[5/2 1] [3/2 0]} (problem6/equidistant-intersections [1 1] [3 0])))
-  (is (= #{} (problem6/equidistant-intersections [1 2] [2 2])))
+  (is (= #{{:type :finite :points #{[-5 0] [0 -5]}}} (problem6/equidistant-intersections [0 0] [-5 -5])))
+  (is (= #{{:type :finite :points #{[5 0] [0 5]}}} (problem6/equidistant-intersections [0 0] [5 5])))
+  (is (= #{{:type :finite :points #{[3 0] [1 2]}}} (problem6/equidistant-intersections [3 2] [1 0])))
+  (is (= #{{:type :finite :points #{[3/2 1] [5/2 0]}}} (problem6/equidistant-intersections [3 1] [1 0])))
+  (is (= #{{:type :finite :points #{[5/2 1] [3/2 0]}}} (problem6/equidistant-intersections [1 1] [3 0])))
+  (is (= #{:} (problem6/equidistant-intersections [1 2] [2 2])))
   (is (= #{} (problem6/equidistant-intersections [1 2] [1 3])))
-  (is (= #{[1/2 3] [3/2 2]} (problem6/equidistant-intersections [0 2] [2 3])))
-  (is (= #{[3 1/2] [2 3/2]} (problem6/equidistant-intersections [2 0] [3 2])))
+  (is (= #{{:type :finite :points #{[1/2 3] [3/2 2]}}} (problem6/equidistant-intersections [0 2] [2 3])))
+  (is (= #{{:type :finite :points #{[3 1/2] [2 3/2]}}} (problem6/equidistant-intersections [2 0] [3 2])))
   )
 
 ;(deftest equidistant
@@ -22,3 +22,4 @@
 ;           }
 ;         (problem6/equidistant [0 0] [-5 -5])))
 ;  )
+

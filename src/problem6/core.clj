@@ -16,39 +16,92 @@
   (+ (Math/abs (- x1 x2)) (Math/abs (- y1 y2)))
   )
 
+(defn finite-length [point1 point2]
+  {:type :finite :points #{point1 point2}}
+  )
+
 (defn equidistant-intersections [[x1 y1] [x2 y2]]
-  (if (= x1 x2)
+  (if (or (= x1 x2) (= y1 y2))
     #{}
-    (if (= y1 y2)
-      #{}
-      (let [
-            x-diff (Math/abs (- x1 x2))
-            y-diff (Math/abs (- y1 y2))
-            ]
-        (if (= x-diff y-diff)
-          #{[x1 y2] [x2 y1]}
-          (let [d (/ (distance [x1 y1] [x2 y2]) 2)]
-            (if (> x-diff y-diff)
-              ; intersects on the horizontal
-              (if (< x1 x2)
-                #{[(+ x1 (- d y-diff)) y2] [(- x2 (- d y-diff)) y1]}
-                #{[(- x1 (- d y-diff)) y2] [(+ x2 (- d y-diff)) y1]}
-                )
-              ;intersects on the vertical
-              (if (< y1 y2)
-                #{[x2 (+ y1 (- d x-diff))] [x1 (- y2 (- d x-diff))]}
-                #{[x2 (- y1 (- d x-diff))] [x1 (+ y2 (- d x-diff))]}
-                )
+    (let [
+          x-diff (Math/abs (- x1 x2))
+          y-diff (Math/abs (- y1 y2))
+          ]
+      (if (= x-diff y-diff)
+        #{(finite-length [x1 y2] [x2 y1])}
+        (let [d (/ (distance [x1 y1] [x2 y2]) 2)]
+          (if (> x-diff y-diff)
+            ; intersects on the horizontal
+            (if (< x1 x2)
+              #{(finite-length [(+ x1 (- d y-diff)) y2] [(- x2 (- d y-diff)) y1])}
+              #{(finite-length [(- x1 (- d y-diff)) y2] [(+ x2 (- d y-diff)) y1])}
+              )
+            ;intersects on the vertical
+            (if (< y1 y2)
+              #{(finite-length [x2 (+ y1 (- d x-diff))] [x1 (- y2 (- d x-diff))])}
+              #{(finite-length [x2 (- y1 (- d x-diff))] [x1 (+ y2 (- d x-diff))])}
               )
             )
           )
-
         )
       )
     )
   )
 
+(defn infinite-equidistant [[x1 y1] [x2 y2]]
 
+  )
+
+(defn find-nearest [coord sites]
+  (let [
+        distances (map #(distance coord %) sites)
+        min-distance (apply min distances)
+        nearest-sites (filter #(= (distance coord %) min-distance) sites)
+        ]
+    nearest-sites
+    )
+  )
+
+(defn perturb [[x y] n]
+  [[(+ n x) y] [(- x n) y] [x (+ n y)] [x (- y n)]]
+  )
+
+(defn i [sites [distance-n n]]
+  [(filter
+     #(= (find-nearest % sites) [site])
+     (set (mapcat (fn [[x y]]
+                    (filter #(= (+ n 1) (distance site %)) (perturb [x y] 1))
+                    ) distance-n))
+     ) (+ 1 n)])
+
+
+(defn find-all [site sites]
+  (if (some #(= (find-nearest % sites) [site]) (perturb site 1000))
+    `()
+    (mapcat first
+            (take-while
+              #(not (empty? (first %)))
+              (iterate #(i sites %) [[site] 0])
+              )
+            )
+    )
+  )
+
+
+
+
+
+
+
+(def site [3 4])
+
+(def sites
+  [[1 1]
+   [1 6]
+   [8 3]
+   [3 4]
+   [5 5]
+   [8 9]])
 
 ;
 ;(defn bounds [site sites]
