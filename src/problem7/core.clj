@@ -41,6 +41,9 @@
                        to-do)))
               )
         time (apply min (keys in-progress))
+
+        completed-this-round (get in-progress time)
+
         new-in-progress {(+ 1 time) started-this-round}
 
         still-to-do (filter (fn [[step _]] (not (contains? (set started-this-round) step))) to-do)
