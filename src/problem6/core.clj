@@ -20,9 +20,18 @@
   {:type :finite :points #{point1 point2}}
   )
 
+(defn vertical [x]
+  {:type :vertical :x x}
+  )
+
+(defn horizontal [y]
+  {:type :horizontal :y y}
+  )
+
+
 (defn equidistant-intersections [[x1 y1] [x2 y2]]
   (if (or (= x1 x2) (= y1 y2))
-    #{}
+    (if (= y1 y2) #{(vertical (/ (+ x1 x2) 2))} #{(horizontal (/ (+ y1 y2) 2))})
     (let [
           x-diff (Math/abs (- x1 x2))
           y-diff (Math/abs (- y1 y2))
