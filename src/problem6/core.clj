@@ -66,7 +66,7 @@
   [[(+ n x) y] [(- x n) y] [x (+ n y)] [x (- y n)]]
   )
 
-(defn i [sites [distance-n n]]
+(defn i [sites site [distance-n n]]
   [(filter
      #(= (find-nearest % sites) [site])
      (set (mapcat (fn [[x y]]
@@ -81,52 +81,78 @@
     (mapcat first
             (take-while
               #(not (empty? (first %)))
-              (iterate #(i sites %) [[site] 0])
+              (iterate #(i sites site %) [[site] 0])
               )
             )
     )
   )
 
-
-
-
-
-
-
-(def site [3 4])
-
-(def sites
-  [[1 1]
-   [1 6]
-   [8 3]
-   [3 4]
-   [5 5]
-   [8 9]])
-
-;
-;(defn bounds [site sites]
-;  (let [
-;        other-sites (filter #(= site %) sites)
-;        nearest (find-nearest sites other-sites)
-;
-;        ]
-;    ()
-;    )
-;  )
-
 (defn run1 [in]
-  ;(time (let [
-  ;            sites (map to-coords in)
-  ;
-  ;            ]
-  ;        sites
-  ;        ))
+  (time (let [
+              sites (map to-coords in)
+
+              ]
+          (apply max (map count (map #(find-all % sites) sites)))
+          ))
   )
 
+(defn distance-to-all [sites site]
+  (reduce #(+ %1 (distance site %2)) sites)
+  )
 
+(defn y-cost [sites y]
+  (let [
+        ys (map second sites)
+        y-distances (map #(Math/abs (- %1 y)) ys)
+        ]
+    (reduce + y-distances)
+    )
+  )
 
+(defn y-costs [sites]
+  (let [
+        ys (map second sites)
+        min-y (apply min ys)
+        max-y (apply max ys)
+        ]
+    (map
+      #(y-cost sites %)
+      (range min-y (+ 1 max-y)))
+    )
+  )
 
+(defn x-cost [sites x]
+  (let [
+        xs (map first sites)
+        x-distances (map #(Math/abs (- %1 x)) xs)
+        ]
+    (reduce + x-distances)
+    )
+  )
 
+(defn x-costs [sites]
+  (let [
+        xs (map first sites)
+        min-x (apply min xs)
+        max-x (apply max xs)
+        ]
+    (map
+      #(x-cost sites %)
+      (range min-x (+ 1 max-x)))
+    )
+  )
+
+(defn run2 [in]
+  (time
+    (let [
+          sites (map to-coords in)
+          xcs (x-costs sites)
+          ycs (y-costs sites)
+          ]
+      (reduce + (for [xc xcs yc ycs :when (> 10000 (+ xc yc))] 1))
+      )
+    )
+  )
 
 
 
