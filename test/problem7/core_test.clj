@@ -15,3 +15,14 @@
            problem7/run1
            )
          )))
+
+
+(deftest run2
+  (is (= 1040
+         (->>
+           [7]
+           runner/get-problem-input
+           str/split-lines
+           problem7/run2
+           )
+         )))

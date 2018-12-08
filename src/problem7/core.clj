@@ -30,33 +30,45 @@
     )
   )
 
-(defn round-n [[done to-do n in-progress _]]
+(defn round-n [finish-times [done to-do n in-progress _]]
   (let [
-        started-this-round (take n
-                                 (sort
-                                   (map first
-                                        (filter
-                                          (fn [[_ constraints]]
-                                            (s/subset? constraints done))
-                                          to-do)))
-                                 )
         time (apply min (keys in-progress))
 
         completed-this-round (get in-progress time)
 
-        new-in-progress {(+ 1 time) started-this-round}
+        still-in-progress (filter (fn [[k v]] (< time k)) in-progress)
+
+        idle-count (- n (count still-in-progress))
+
+        new-done (set (map str (concat completed-this-round done)))
+
+        started-this-round (take idle-count
+                                 (sort
+                                   (map first
+                                        (filter
+                                          (fn [[_ constraints]]
+                                            (every? #(contains? new-done %) constraints))
+                                          to-do)))
+                                 )
+
+        started-this-round-to-time (finish-times started-this-round time)
+
+        new-in-progress (merge-with concat started-this-round-to-time still-in-progress)
 
         still-to-do (filter (fn [[step _]] (not (contains? (set started-this-round) step))) to-do)
         ]
-    [(set (concat started-this-round done)) still-to-do n new-in-progress completed-this-round]
+    [new-done still-to-do n new-in-progress completed-this-round]
     )
   )
 
+
 (defn solve [deps]
   (take-while
-    #(not (empty? (nth % 4)))
-    (rest (rest
-            (iterate round-n [#{} deps 1 {0 []} []]))))
+        #(not (empty? (nth % 4)))
+        (rest (rest
+                (iterate
+                  #(round-n (fn [started-this-round time] {(+ 1 time) started-this-round}) %)
+                  [#{} deps 1 {0 []} []]))))
   )
 
 
@@ -72,26 +84,27 @@
         )
   )
 
+
+(defn solve2 [deps]
+  (take-while
+
+        #(not (empty? (nth % 3)))
+        (iterate
+          #(round-n (fn [started-this-round time] (into {} (map (fn [s] [(+ 61 (int (get s 0)) time (- (int \A))) s]) started-this-round))) %)
+          [#{} deps 5 {0 []} []]))
+  )
+
+
 (defn run2 [in]
   (time (->>
           in
           to-deps
-          solve
-          (map #(nth % 2))
-          (apply str)
+          solve2
+          (map #(nth % 3))
+          last
+          keys
+          first
           )
         )
   )
 
-(def deps
-
-  (to-deps
-    [
-     "Step C must be finished before step A can begin."
-     "Step C must be finished before step F can begin."
-     "Step A must be finished before step B can begin."
-     "Step A must be finished before step D can begin."
-     "Step B must be finished before step E can begin."
-     "Step D must be finished before step E can begin."
-     "Step F must be finished before step E can begin."
-     ]))
