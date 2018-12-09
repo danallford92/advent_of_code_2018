@@ -63,8 +63,9 @@
   )
 
 (defn run2 [rows]
-  (let [tree (:node (read-node (parse-inputs (get rows 0))))]
-    (sum-meta2 tree)
-    )
+  (time
+    (let [tree (:node (read-node (parse-inputs (get rows 0))))]
+      (sum-meta2 tree)
+      ))
 
   )
