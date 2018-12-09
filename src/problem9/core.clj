@@ -53,14 +53,15 @@
   (let
     [
      node-before (get list id)
-     node-after (get list (:next node-before))
-     new-id (str (rand) (rand) (rand))
-     to-insert {:value value :prev id :next (:id node-after) :id new-id}
+     node-after-id (:next node-before)
+     node-after (get list node-after-id)
+     new-id (rand)
+     to-insert {:value value :prev id :next node-after-id}
      new-node-after (assoc node-after :prev new-id)
      new-node-before (assoc node-before :next new-id)
-     new-list (assoc list (:id node-before) new-node-before new-id to-insert (:id node-after) new-node-after)
+     new-list (assoc list id new-node-before new-id to-insert node-after-id new-node-after)
      ]
-    (if (= node-before node-after)
+    (if (= id node-after-id)
       (let [new-node (assoc node-before :prev new-id :next new-id)]
         (assoc list id new-node new-id to-insert)
         )
@@ -72,27 +73,30 @@
 (defn remove-at [list id]
   (let [
         to-remove (get list id)
-        next (get list (:next to-remove))
-        prev (get list (:prev to-remove))
-        next-replacement (assoc next :prev (:id prev))
-        prev-replacement (assoc prev :next (:id next))
+        next-id (:next to-remove)
+        prev-id (:prev to-remove)
+        next (get list next-id)
+        prev (get list next-id)
+        next-replacement (assoc next :prev prev-id)
+        prev-replacement (assoc prev :next next-id)
         ]
-    (assoc list id nil (:id next-replacement) next-replacement (:id prev-replacement) prev-replacement)
+    (assoc list id nil next-id next-replacement prev-id prev-replacement)
     )
   )
 
 (defn find-node-n-before [list id n]
-  (if (= 0 n)
-    id
-    (find-node-n-before list (:prev (get list id)) (dec n))
+  (loop [l list current-id id num-left n]
+    (if (= 0 num-left)
+      current-id
+      (recur l (:prev (get l current-id)) (dec num-left))
+      )
     )
   )
 
-(defn next-game-state [current-state]
+(defn next-game-state [current-state turn-number num-players]
   (let
     [
-     {current-index :current-index marbles :marbles prev-turn-number :turn-number scores :scores num-players :num-players} current-state
-     turn-number (inc prev-turn-number)
+     {current-index :current-index marbles :marbles scores :scores} current-state
      ]
     (if (= 0 (mod turn-number 23))
       (let [
@@ -111,14 +115,14 @@
             new-scores (assoc scores current-player new-player-score)
             ;</increaseScore>
             ]
-        {:current-index new-current-index :marbles new-marbles :turn-number turn-number :scores new-scores :num-players num-players}
+        {:current-index new-current-index :marbles new-marbles :scores new-scores}
         )
       (let [
             next-index (:next (get marbles current-index))
             new-marbles (insert-after marbles next-index turn-number)
             new-current-index (:next (get new-marbles next-index))
             ]
-        {:current-index new-current-index :marbles new-marbles :turn-number turn-number :scores scores :num-players num-players}
+        {:current-index new-current-index :marbles new-marbles :scores scores}
         )
       )
     )
@@ -126,8 +130,12 @@
 
 
 (defn generate [num-players max-val]
-  ;(reduce (fn [acc _] (next-game-state acc)) {:current-index 1 :marbles [0 1] :turn-number 1 :scores {} :num-players num-players} (range 2 max-val))
-  (iterate next-game-state {:current-index 1 :marbles [0 1] :turn-number 1 :scores {} :num-players num-players})
+  (reduce (fn [acc turn-number] (next-game-state acc turn-number num-players)) {:current-index "1234" :marbles {"1234" {:value 0, :prev "1234", :next "1234"}} :scores {}} (range 1 max-val))
+  )
+
+
+(defn run2 [in]
+  (time (apply max (vals (:scores (generate 470 (* 100 72170))))))
   )
 
 
