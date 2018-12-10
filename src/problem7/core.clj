@@ -19,6 +19,8 @@
        )
   )
 
+; [["C", "D"], ["C", "E"]] -> {"C": [["C", "D"], ["C", "E"]]} -> {"C": #{D, E}}
+
 (defn to-deps [lines]
   (let [
         deps (->> lines

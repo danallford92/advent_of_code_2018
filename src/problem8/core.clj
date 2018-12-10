@@ -21,6 +21,7 @@
       )
     )
   )
+;[1 1 0 1 10 20 1 1 0 1 2 15]
 
 (defn read-node [[child-count meta-count & rest]]
   (let [{children :nodes after-children :rest} (read-n-nodes child-count rest)]
