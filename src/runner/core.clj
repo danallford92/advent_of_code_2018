@@ -39,7 +39,7 @@
   (->>
     (get-problem-input args)
     str/split-lines
-    problem10/run2
+    problem10/run1
     println
     )
   )
