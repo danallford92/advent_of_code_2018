@@ -1,7 +1,7 @@
 (ns runner.core
   (
     :require [clj-http.client :as client]
-             [problem10.core :as problem10]
+             [problem12.core :as problem12]
              [clojure.java.io :as io]
              [clojure.string :as str]
              ))
@@ -34,12 +34,12 @@
 
 
 (defn -main
-  "Takes session id as first argument to retrieve the problem input"
+  "Takes session id as first argument organisationUserDAOto retrieve the problem input"
   [& args]
   (->>
     (get-problem-input args)
     str/split-lines
-    problem10/run1
+    problem12/run1
     println
     )
   )
